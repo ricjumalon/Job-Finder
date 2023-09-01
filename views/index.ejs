@@ -1,0 +1,93 @@
+<%- include('partials/header.ejs') %>
+<body>
+  <div class="container mt-5">
+    <div class="row justify-content-center banner">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <p><strong>Job Finder</strong> allows you to search for a job anywhere on the internet.</p>
+                    <form action="/search" method="POST">
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-lg" placeholder="Web Developer in Philippines" name="job" required>
+                            <div class="input-group-append">
+                            <button class="btn btn-lg btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search Job</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+    <% if (locals.data) { %>
+        <% data.forEach(element => { %>
+            <div class="col-lg-12 col-md-12 col-sm-12 mb-3">
+                <div class="card">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 style="margin:0;"><%= element.job_title %></h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle text-primary">
+                                <% if (element.employer_website != null) { %>
+                                    <a target="_blank" href="<%= element.employer_website %>"><%= element.employer_name %></a>
+                                <% } else {%>
+                                    <a href="#"><%= element.employer_name %></a>
+                                <% } %>
+                            </h6>
+                            <p class="location"><i class="fa-solid fa-location-dot"></i>
+                                <% if (element.job_city) { %>
+                                    <%= element.job_city %>
+                                <% } %>
+                                <% if (element.job_state) { %>
+                                    <%=" "+ element.job_state %>
+                                <% } %>
+                                <% if (element.job_country) { %>
+                                    <%=" "+ element.job_country %>
+                                <% } %>
+                            </p>
+                            <h6 class="card-subtitle mt-3">Job Description:</h6>
+                            <p>
+                                <%- element.job_description.replace(/\n/g, '<br>') %>
+                            </p>
+                            
+                            <% if (element.job_highlights.Qualifications) { %>
+                                <h6 class="card-subtitle mt-3">Qualifications:</h6>
+                                <ul class="px-3">    
+                                    <% element.job_highlights.Qualifications.forEach(function(qualification) { %>
+                                        <li><%= qualification %></li>
+                                    <% }) %>
+                                </ul>
+                            <% } %>
+                            <% if (element.job_highlights.Responsibilities) { %>
+                                <h6 class="card-subtitle mt-3">Responsibilities:</h6>
+                                <ul class="px-3">
+                                    <% element.job_highlights.Responsibilities.forEach(function(responsibility) { %>
+                                        <li><%= responsibility %></li>
+                                    <% }) %>
+                                </ul>
+                            <% } %>
+                            <% if (element.job_highlights.Benefits) { %>
+                                <h6 class="card-subtitle mt-3">Benefits:</h6>
+                                <ul class="px-3">
+                                    <% element.job_highlights.Benefits.forEach(function(benefit) { %>
+                                        <li><%= benefit %></li>
+                                    <% }) %>
+                                </ul>
+                            <% } %>
+                            <p class="text-primary">Posted from <a target="_blank" href="<%= element.job_apply_link %>"><%= element.job_publisher %> </a><br>
+                                Posted last <%= new Date(element.job_posted_at_datetime_utc).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' }); %> </p>
+                        </div>
+                        <div class="card-footer text-right">
+                            <a target="_blank" class="btn btn-warning text-dark" href="<%= element.job_apply_link %>" role="button">Apply Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    <% } %>
+    </div>
+  </div>
+  <%- include('partials/footer.ejs') %>
+</body>
+</html>
